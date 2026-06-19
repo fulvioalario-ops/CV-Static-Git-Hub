@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fulvio Alario - Data Engineering Analyst</title>
+    
+    <!-- Pre-inizializzazione Google Consent Mode v2 (GDPR Compliance) -->
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        
+        // Blocca i cookie di tracciamento preventivamente finché l'utente non fornisce il consenso
+        gtag('consent', 'default', {
+            'analytics_storage': 'denied',
+            'ad_storage': 'denied',
+            'ad_user_data': 'denied',
+            'ad_personalization': 'denied',
+            'wait_for_update': 500
+        });
+    </script>
+
+    <!-- Tailwind CSS per uno stile moderno e reattivo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Alpine.js per la gestione istantanea delle traduzioni, Dark Mode e Cookie Banner -->
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            300: '#c4b5fd',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #4b5563;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body 
+    x-data="portfolioApp()" 
+    class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen font-sans antialiased transition-colors duration-300"
+    :class="{ 'dark': darkMode }"
+>
+
+    <!-- CONTAINER GENERALE DEL SITO -->
+    <div class="min-h-screen flex flex-col relative overflow-x-hidden">
+
+        <!-- NAV BAR PRINCIPALE -->
+        <header class="w-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 border-b border-slate-200/50 dark:border-slate-800/50 z-20 transition-colors">
+            <div class="max-w-5xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <a href="#" class="text-xl font-bold tracking-tight bg-gradient-to-r from-primary-600 to-indigo-500 bg-clip-text text-transparent" x-text="cv.name"></a>
+                
+                <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600 dark:text-slate-300">
+                    <a href="#about" class="hover:text-primary-600 dark:hover:text-primary-400 transition" x-text="ui[currentLang].navProfile"></a>
+                    <a href="#experience" class="hover:text-primary-600 dark:hover:text-primary-400 transition" x-text="ui[currentLang].navExperience"></a>
+                    <a href="#education" class="hover:text-primary-600 dark:hover:text-primary-400 transition" x-text="ui[currentLang].navEducation"></a>
+                    <a href="#projects" class="hover:text-primary-600 dark:hover:text-primary-400 transition" x-text="ui[currentLang].navProjects"></a>
+                    <a href="#contact" class="hover:text-primary-600 dark:hover:text-primary-400 transition" x-text="ui[currentLang].navContact"></a>
+                </nav>
+
+                <!-- Selettore di Lingua e Tema -->
+                <div class="flex items-center gap-3">
+                    <div class="inline-flex rounded-lg border border-slate-200 dark:border-slate-800 p-0.5 bg-slate-100 dark:bg-slate-900">
+                        <button @click="currentLang = 'it'" :class="currentLang === 'it' ? 'bg-white dark:bg-slate-800 text-primary-600 dark:text-white font-bold' : 'text-slate-500 hover:text-slate-850 dark:hover:text-slate-200'" class="px-2.5 py-1 text-xs rounded-md transition">IT</button>
+                        <button @click="currentLang = 'en'" :class="currentLang === 'en' ? 'bg-white dark:bg-slate-800 text-primary-600 dark:text-white font-bold' : 'text-slate-500 hover:text-slate-850 dark:hover:text-slate-200'" class="px-2.5 py-1 text-xs rounded-md transition">EN</button>
+                        <button @click="currentLang = 'de'" :class="currentLang === 'de' ? 'bg-white dark:bg-slate-800 text-primary-600 dark:text-white font-bold' : 'text-slate-500 hover:text-slate-850 dark:hover:text-slate-200'" class="px-2.5 py-1 text-xs rounded-md transition">DE</button>
+                    </div>
+                    <button 
+                        @click="darkMode = !darkMode" 
+                        class="p-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-white rounded-lg text-xs font-semibold tracking-wide transition flex items-center justify-center"
+                        title="Cambia Tema"
+                    >
+                        <!-- Sun Icon -->
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-show="darkMode">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                        </svg>
+                        <!-- Moon Icon -->
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-show="!darkMode">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- SEZIONE HERO -->
+        <section id="hero" class="relative overflow-hidden pt-12 pb-20 md:py-32 flex items-center">
+            <div class="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-primary-400/20 dark:bg-primary-600/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-96 h-96 bg-indigo-400/20 dark:bg-indigo-600/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="max-w-5xl mx-auto px-6 w-full relative z-10 grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
+                <div class="md:col-span-7 space-y-6 text-center md:text-left">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-50 dark:bg-primary-950/50 border border-primary-100 dark:border-primary-900/50 text-xs font-semibold text-primary-600 dark:text-primary-400">
+                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                        <span x-text="ui[currentLang].availability"></span>
+                    </div>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight">
+                        Hi, I'm <span class="bg-gradient-to-r from-primary-600 via-indigo-500 to-indigo-655 bg-clip-text text-transparent" x-text="cv.name"></span>
+                    </h1>
+                    <h2 class="text-xl sm:text-2xl font-bold text-slate-655 dark:text-slate-350" x-text="cv[currentLang].title"></h2>
+                    <p class="text-lg text-slate-500 dark:text-slate-400 max-w-xl leading-relaxed italic" x-text="cv[currentLang].tagline"></p>
+                    
+                    <!-- Pulsanti d'Azione -->
+                    <div class="flex flex-wrap justify-center md:justify-start gap-4 pt-2">
+                        <a href="#contact" class="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-xl shadow-lg hover:-translate-y-0.5 transition active:translate-y-0 flex items-center gap-2">
+                            <span x-text="ui[currentLang].btnContact"></span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </a>
+                        <a href="#experience" class="px-6 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/80 font-medium rounded-xl hover:-translate-y-0.5 transition">
+                            <span x-text="ui[currentLang].btnDiscovery"></span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- FOTO PROFILO REALE CON FALLBACK -->
+                <div class="md:col-span-5 flex justify-center">
+                    <div class="relative w-64 h-80 sm:w-72 sm:h-96 rounded-3xl bg-gradient-to-tr from-primary-500 to-indigo-650 p-1 shadow-2xl overflow-hidden group">
+                        <div class="w-full h-full bg-white dark:bg-slate-950 rounded-[22px] overflow-hidden relative flex flex-col justify-end">
+                            
+                            <!-- Visualizzazione della tua foto reale (percorso relativo perfetto per il caricamento su GitHub Pages) -->
+                            <template x-if="!imageError">
+                                <img 
+                                    src="Foto_Profile.png" 
+                                    alt="Fulvio Alario" 
+                                    className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                                    @error="imageError = true"
+                                />
+                            </template>
+
+                            <!-- Fallback visivo se l'immagine non è ancora stata caricata o rinominata nel server -->
+                            <template x-if="imageError">
+                                <div class="absolute inset-0 bg-slate-100 dark:bg-slate-900 flex flex-col items-center justify-center p-6 text-center">
+                                    <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary-100 to-indigo-100 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center text-primary-600 dark:text-primary-400 mb-4 shadow-inner">
+                                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                        </svg>
+                                    </div>
+                                    <span class="text-xs text-slate-400">Inserisci Foto_Profile.Png.jpg nella stessa cartella</span>
+                                </div>
+                            </template>
+
+                            <!-- Overlay sfumato per uno stile professionale e leggibile -->
+                            <div class="relative z-10 p-5 bg-gradient-to-t from-slate-950/95 via-slate-950/45 to-transparent w-full text-left">
+                                <h3 class="font-bold text-lg text-white" x-text="cv.name"></h3>
+                                <p class="text-xs text-primary-300 font-semibold" x-text="cv[currentLang].title"></p>
+                                <div class="flex items-center gap-1.5 text-[11px] text-slate-300 mt-1">
+                                    <svg class="w-3.5 h-3.5 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                    <span x-text="cv[currentLang].location"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEZIONE PROFILO -->
+        <section id="about" class="py-20 bg-white dark:bg-slate-900/50 border-y border-slate-200/50 dark:border-slate-800/50 transition-colors">
+            <div class="max-w-5xl mx-auto px-6">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-12">
+                    <div class="md:col-span-6 space-y-6">
+                        <h2 class="text-3xl font-extrabold tracking-tight" x-text="ui[currentLang].navProfile"></h2>
+                        <div class="w-12 h-1 bg-primary-600 rounded"></div>
+                        <p class="text-slate-600 dark:text-slate-300 leading-relaxed text-lg whitespace-pre-line animate-fade-in" x-text="cv[currentLang].about"></p>
+                        
+                        <!-- Link Sociali -->
+                        <div class="flex items-center gap-3 pt-2">
+                            <a :href="cv.github" target="_blank" rel="noopener noreferrer" class="p-3 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 rounded-xl transition text-slate-600 dark:text-slate-300">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.579.688.481C19.137 20.162 22 16.418 22 12c0-5.523-4.477-10-10-10z"></path></svg>
+                            </a>
+                            <a :href="cv.linkedin" target="_blank" rel="noopener noreferrer" class="p-3 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 rounded-xl transition text-slate-600 dark:text-slate-300">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"></path></svg>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Competenze Tecnologiche -->
+                    <div class="md:col-span-6 space-y-6">
+                        <h2 class="text-3xl font-extrabold tracking-tight" x-text="ui[currentLang].competencies"></h2>
+                        <div class="w-12 h-1 bg-primary-600 rounded"></div>
+                        <div class="flex flex-wrap gap-2 pt-2">
+                            <template x-for="skill in cv.skills" :key="skill">
+                                <!-- Modificato: Testo grigio chiaro leggibile di default tramite classe text-slate-600 dark:text-slate-300 -->
+                                <span class="px-4 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-primary-50 dark:hover:bg-primary-950/30 hover:text-primary-600 dark:hover:text-primary-400 rounded-xl font-medium text-sm transition duration-200 cursor-default" x-text="skill"></span>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEZIONE ESPERIENZE (Timeline - Solo Lavoro) -->
+        <section id="experience" class="py-20 font-sans">
+            <div class="max-w-5xl mx-auto px-6">
+                <div class="text-center max-w-2xl mx-auto mb-16 space-y-3">
+                    <h2 class="text-3xl font-extrabold tracking-tight sm:text-4xl" x-text="ui[currentLang].navExperience"></h2>
+                    <div class="w-12 h-1 bg-primary-600 mx-auto rounded"></div>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm" x-text="ui[currentLang].journeySubtitle"></p>
+                </div>
+
+                <!-- Linea Temporale Lavorativa -->
+                <div class="relative border-l border-slate-200 dark:border-slate-800 ml-4 md:ml-32 space-y-12">
+                    <!-- Filtra dinamicamente mostrando solo gli elementi "work" -->
+                    <template x-for="(exp, index) in cv[currentLang].experience.filter(item => item.type === 'work')" :key="index">
+                        <div class="relative pl-8 group">
+                            <div class="absolute -left-1.5 top-1.5 w-3.5 h-3.5 rounded-full bg-slate-300 dark:bg-slate-700 border-2 border-white dark:border-slate-950 group-hover:bg-primary-500 group-hover:scale-125 transition-all duration-300"></div>
+                            
+                            <!-- Durata a sinistra -->
+                            <div class="md:absolute md:-left-36 md:top-1 md:w-28 md:text-right font-semibold text-xs uppercase tracking-wider text-primary-600 dark:text-primary-400 mb-2 md:mb-0 font-mono" x-text="exp.duration"></div>
+
+                            <!-- Box Elemento -->
+                            <div class="p-6 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition">
+                                <h3 class="font-bold text-lg text-slate-800 dark:text-slate-100" x-text="exp.role"></h3>
+                                <h4 class="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-3" x-text="exp.company"></h4>
+                                <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed whitespace-pre-line" x-text="exp.desc"></p>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEZIONE FORMAZIONE ED ISTRUZIONE (Education) -->
+        <section id="education" class="py-20 bg-white dark:bg-slate-900/50 border-y border-slate-200/50 dark:border-slate-800/50 transition-colors">
+            <div class="max-w-5xl mx-auto px-6">
+                <div class="text-center max-w-2xl mx-auto mb-16 space-y-3">
+                    <h2 class="text-3xl font-extrabold tracking-tight sm:text-4xl" x-text="ui[currentLang].navEducation"></h2>
+                    <div class="w-12 h-1 bg-primary-600 mx-auto rounded"></div>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm" x-text="ui[currentLang].educationSubtitle"></p>
+                </div>
+
+                <!-- Griglia Card di Studio Academici -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Filtra dinamicamente mostrando solo gli elementi "education" -->
+                    <template x-for="(edu, index) in cv[currentLang].experience.filter(item => item.type === 'education')" :key="index">
+                        <div class="p-6 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 flex gap-4">
+                            <!-- Icona Laurea / Diploma -->
+                            <div class="shrink-0 h-12 w-12 rounded-xl bg-primary-100 dark:bg-primary-900/40 text-primary-650 dark:text-primary-400 flex items-center justify-center">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479L12 21zm0 0L5.84 17.057a12.083 12.083 0 01.665-6.479L12 14z"></path>
+                                </svg>
+                            </div>
+                            <!-- Dettagli -->
+                            <div class="space-y-1">
+                                <span class="text-xs font-bold font-mono text-primary-600 dark:text-primary-450" x-text="edu.duration"></span>
+                                <h3 class="font-extrabold text-lg text-slate-800 dark:text-slate-100" x-text="edu.role"></h3>
+                                <h4 class="text-sm font-semibold text-slate-500 dark:text-slate-400" x-text="edu.company"></h4>
+                                <p class="text-sm text-slate-600 dark:text-slate-355 pt-2 whitespace-pre-line" x-text="edu.desc"></p>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEZIONE PROGETTI -->
+        <section id="projects" class="py-20 bg-slate-100/50 dark:bg-slate-900/20 border-b border-slate-200/50 dark:border-slate-800/50 transition-colors">
+            <div class="max-w-5xl mx-auto px-6">
+                <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+                    <div class="space-y-3">
+                        <h2 class="text-3xl font-extrabold tracking-tight" x-text="ui[currentLang].navProjects"></h2>
+                        <div class="w-12 h-1 bg-primary-600 rounded"></div>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm" x-text="ui[currentLang].projectSubtitle"></p>
+                    </div>
+                </div>
+
+                <!-- Griglia Progetti -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <template x-for="(proj, idx) in projects" :key="idx">
+                        <div class="group bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between">
+                            <div class="p-6 space-y-4">
+                                <div class="h-12 w-12 rounded-xl bg-primary-50 dark:bg-slate-800 flex items-center justify-center text-primary-600 dark:text-primary-400 group-hover:scale-110 transition duration-300">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                                </div>
+                                <h3 class="font-bold text-lg text-slate-800 dark:text-slate-100" x-text="proj.title[currentLang] || proj.title['en']"></h3>
+                                <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed" x-text="proj.desc[currentLang] || proj.desc['en']"></p>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEZIONE CONTATTI (Collegata in modo asincrono con Formspree) -->
+        <section id="contact" class="py-20">
+            <div class="max-w-5xl mx-auto px-6">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-12 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-8 md:p-12 shadow-xl relative overflow-hidden">
+                    <div class="absolute -bottom-10 -right-10 w-48 h-48 bg-primary-500/10 dark:bg-primary-600/5 rounded-full blur-2xl pointer-events-none"></div>
+
+                    <!-- Dettagli contatto -->
+                    <div class="md:col-span-5 space-y-6">
+                        <h2 class="text-3xl font-extrabold tracking-tight" x-text="ui[currentLang].navContact"></h2>
+                        <div class="w-12 h-1 bg-primary-650 rounded"></div>
+                        <p class="text-slate-500 dark:text-slate-400 leading-relaxed text-sm" x-text="ui[currentLang].contactSubtitle"></p>
+                        
+                        <div class="space-y-4 pt-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-primary-50 dark:bg-slate-800/80 text-primary-600 dark:text-primary-400 flex items-center justify-center">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Email</p>
+                                    <a :href="'mailto:' + cv.email" class="text-sm font-bold text-slate-700 dark:text-slate-200 hover:text-primary-600" x-text="cv.email"></a>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-primary-50 dark:bg-slate-800/80 text-primary-600 dark:text-primary-400 flex items-center justify-center">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider" x-text="ui[currentLang].navLocation"></p>
+                                    <p class="text-sm font-bold text-slate-700 dark:text-slate-200" x-text="cv[currentLang].location"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form di contatto asincrono -->
+                    <div class="md:col-span-7">
+                        <form @submit.prevent="submitContactForm($event)" class="space-y-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1" x-text="ui[currentLang].formName"></label>
+                                    <input type="text" name="name" required class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Email</label>
+                                    <input type="email" name="email" required class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1" x-text="ui[currentLang].formMsg"></label>
+                                <textarea name="message" rows="4" required class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" :placeholder="ui[currentLang].formMsgPlaceholder"></textarea>
+                            </div>
+                            <button type="submit" class="w-full py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl shadow-lg transition duration-200" x-text="ui[currentLang].formSubmitBtn"></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="mt-auto py-8 border-t border-slate-200/50 dark:border-slate-800/50 text-center text-xs text-slate-400 dark:text-slate-500">
+            <div class="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 font-medium">
+                <p>© 2026 <span x-text="cv.name"></span>. <span x-text="ui[currentLang].footerNote"></span></p>
+                <p class="flex items-center gap-1">
+                    Made for Google Sites & GitHub Pages
+                    <svg class="w-4 h-4 text-red-500 animate-pulse" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path></svg>
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- GDPR COOKIE CONSENT BANNER -->
+    <!-- ========================================================= -->
+    <div 
+        x-show="!cookieDecided" 
+        x-transition:enter="transition ease-out duration-500"
+        x-transition:enter-start="transform translate-y-full opacity-0"
+        x-transition:enter-end="transform translate-y-0 opacity-100"
+        class="fixed bottom-0 left-0 right-0 z-50 p-6 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 shadow-[0_-10px_25px_rgba(0,0,0,0.1)]"
+    >
+        <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="space-y-1 text-center md:text-left">
+                <h4 class="text-sm font-bold flex items-center justify-center md:justify-start gap-2">
+                    🍪 <span x-text="cookieUi[currentLang].title"></span>
+                </h4>
+                <p class="text-xs text-slate-500 dark:text-slate-400 max-w-3xl leading-relaxed" x-text="cookieUi[currentLang].desc"></p>
+            </div>
+            <div class="flex gap-2 shrink-0">
+                <button @click="rejectAllCookies()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-bold transition" x-text="cookieUi[currentLang].rejectBtn"></button>
+                <button @click="acceptAllCookies()" class="px-5 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-xl text-xs font-bold transition shadow-md shadow-primary-500/10" x-text="cookieUi[currentLang].acceptBtn"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- MODAL DI SUCCESSO INVIO EMAIL -->
+    <!-- ========================================================= -->
+    <div x-show="showContactSuccess" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" x-transition>
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 max-w-sm w-full text-center space-y-4 shadow-2xl border border-slate-200 dark:border-slate-800" @click.away="showContactSuccess = false">
+            <div class="w-16 h-16 bg-green-50 dark:bg-green-950/50 text-green-500 rounded-full flex items-center justify-center mx-auto">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+            </div>
+            <h3 class="font-bold text-xl" x-text="ui[currentLang].modalSuccessTitle"></h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400" x-text="ui[currentLang].modalSuccessBody"></p>
+            <button @click="showContactSuccess = false" class="w-full py-2.5 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl transition" x-text="ui[currentLang].modalCloseBtn"></button>
+        </div>
+    </div>
+
+    <!-- SCRIPT LOGICO DELL'APPLICAZIONE -->
+    <script>
+        function portfolioApp() {
+            return {
+                darkMode: true,
+                currentLang: 'it',
+                activeFilter: 'all',
+                showContactSuccess: false,
+                imageError: false,
+                
+                // Configura i tuoi ID di tracciamento personali reali
+                GA_MEASUREMENT_ID: 'G-6BK8QH16HM',
+                GTM_CONTAINER_ID: 'GTM-TQX9XZN5',
+                FORMSPREE_ENDPOINT: 'https://formspree.io/f/mdavrkyr',
+
+                // Stato dei Consensi GDPR salvati localmente
+                cookieDecided: localStorage.getItem('cookie_decided') === 'true',
+                cookieConsented: localStorage.getItem('cookie_analytics_consent') === 'true',
+
+                // Traduzioni Interfaccia Utente (UI)
+                ui: {
+                    it: {
+                        navProfile: 'Profilo',
+                        navExperience: 'Esperienza',
+                        navEducation: 'Istruzione',
+                        navProjects: 'Progetti',
+                        navContact: 'Contatti',
+                        navLocation: 'Località',
+                        printBtn: 'Stampa CV',
+                        availability: 'Disponibile per Ruoli & Consulenze',
+                        btnContact: 'Contattami',
+                        btnDiscovery: 'Scopri il mio percorso',
+                        competencies: 'Competenze Chiave',
+                        journeySubtitle: 'Un viaggio cronologico tra operazioni, analisi strategiche ed ingegneria dei dati.',
+                        educationSubtitle: 'La mia formazione accademica e percorsi di studio.',
+                        projectSubtitle: 'I miei progetti e aree di specializzazione.',
+                        contactSubtitle: 'Hai un progetto o un\'opportunità di data pipeline da discutere? Mandami un messaggio.',
+                        formName: 'Il tuo Nome',
+                        formMsg: 'Messaggio',
+                        formMsgPlaceholder: 'Scrivi il tuo messaggio qui...',
+                        formSubmitBtn: 'Invia Messaggio',
+                        footerNote: 'Sviluppato con HTML, Tailwind e GDPR Compliance.',
+                        modalSuccessTitle: 'Messaggio Inviato!',
+                        modalSuccessBody: 'Grazie per avermi contattato! Il messaggio è stato inoltrato via email con successo.',
+                        modalCloseBtn: 'Fantastico, grazie!',
+                        navLocation: 'Sede'
+                    },
+                    en: {
+                        navProfile: 'About Me',
+                        navExperience: 'Experience',
+                        navEducation: 'Education',
+                        navProjects: 'Projects',
+                        navContact: 'Contact',
+                        navLocation: 'Location',
+                        printBtn: 'Print CV',
+                        availability: 'Available for Opportunities',
+                        btnContact: 'Get in Touch',
+                        btnDiscovery: 'View My Journey',
+                        competencies: 'Core Competencies',
+                        journeySubtitle: 'A chronological journey through real-time operations, strategic analysis, and data engineering.',
+                        educationSubtitle: 'My academic degrees and education history.',
+                        projectSubtitle: 'My projects and areas of specialization.',
+                        contactSubtitle: 'Do you have a project or a data pipeline opportunity to discuss? Send me a message.',
+                        formName: 'Your Name',
+                        formMsg: 'Message',
+                        formMsgPlaceholder: 'Type your message here...',
+                        formSubmitBtn: 'Send Message',
+                        footerNote: 'Developed with HTML, Tailwind, and GDPR Compliance.',
+                        modalSuccessTitle: 'Message Sent!',
+                        modalSuccessBody: 'Thank you for reaching out! Your message was delivered successfully.',
+                        modalCloseBtn: 'Great, thanks!',
+                        navLocation: 'Location'
+                    },
+                    de: {
+                        navProfile: 'Über mich',
+                        navExperience: 'Erfahrung',
+                        navEducation: 'Ausbildung',
+                        navProjects: 'Projekte',
+                        navContact: 'Kontakt',
+                        navLocation: 'Standort',
+                        printBtn: 'Lebenslauf drucken',
+                        availability: 'Verfügbar für neue Möglichkeiten',
+                        btnContact: 'Kontaktieren Sie mich',
+                        btnDiscovery: 'Meinen Weg ansehen',
+                        competencies: 'Kernkompetenzen',
+                        journeySubtitle: 'Ein chronologischer Überblick über Echtzeit-Operationen, strategische Analysen und Data Engineering.',
+                        educationSubtitle: 'Mein akademischer Werdegang und Bildungsweg.',
+                        projectSubtitle: 'Meine Projekte und Spezialisierungsbereiche.',
+                        contactSubtitle: 'Haben Sie ein Projekt oder eine Pipeline-Optimierung zu besprechen? Schreiben Sie mir.',
+                        formName: 'Ihr Name',
+                        formMsg: 'Nachricht',
+                        formMsgPlaceholder: 'Geben Sie Ihre Nachricht hier ein...',
+                        formSubmitBtn: 'Nachricht senden',
+                        footerNote: 'Entwickelt mit HTML, Tailwind und DSGVO-Konformität.',
+                        modalSuccessTitle: 'Nachricht gesendet!',
+                        modalSuccessBody: 'Vielen Dank für Ihre Kontaktaufnahme! Ihre Nachricht wurde erfolgreich übertragen.',
+                        modalCloseBtn: 'Großartig, danke!',
+                        navLocation: 'Standort'
+                    }
+                },
+
+                // Traduzioni dei testi di Cookie Policy (GDPR)
+                cookieUi: {
+                    it: {
+                        title: 'Gestione del Consenso Cookie',
+                        desc: 'Utilizziamo cookie di terze parti per misurare il traffico del sito ed analizzare le interazioni degli utenti. I cookie verranno attivati esclusivamente dopo la tua esplicita autorizzazione nel pieno rispetto del regolamento europeo GDPR.',
+                        acceptBtn: 'Accetta Tutti',
+                        rejectBtn: 'Rifiuta'
+                    },
+                    en: {
+                        title: 'Cookie Consent Management',
+                        desc: 'We use third-party analytics cookies to measure site traffic and optimize user interaction. Analytics and marketing cookies will be initialized only after your explicit approval, ensuring full GDPR compliance.',
+                        acceptBtn: 'Accept All',
+                        rejectBtn: 'Reject'
+                    },
+                    de: {
+                        title: 'Cookie-Einwilligung',
+                        desc: 'Wir verwenden Analyse-Cookies von Drittanbietern, um den Website-Verkehr zu messen. Tracking-Cookies werden erst nach Ihrer ausdrücklichen Zustimmung im Einklang mit der DSGVO aktiviert.',
+                        acceptBtn: 'Alle akzeptieren',
+                        rejectBtn: 'Ablehnen'
+                    }
+                },
+
+                // DATI DEL CV DI FULVIO ALARIO (Tradotti)
+                cv: {
+                    name: 'Fulvio Alario',
+                    email: 'fulvio.alario@gmail.com',
+                    phone: '+39 339 739 2452',
+                    skills: [
+                        'dbt', 'Snowflake', 'Medallion Architecture', 'SQL', 'Python', 
+                        'BigQuery', 'Databricks', 'AWS Athena', 'Power BI', 'Tableau', 
+                        'Looker Studio', 'Microsoft Automate', 'Excel VBA', 'Google Analytics', 
+                        'Google Tag Manager', 'Git'
+                    ],
+                    it: {
+                        title: 'Data Engineering Analyst',
+                        location: 'Nürnberg, Germania',
+                        tagline: '"L\'intelligenza artificiale non sostituisce l\'intelligenza umana; è uno strumento per amplificarla." - Fei-Fei Li',
+                        about: 'Come Data Analyst ed Engineering Analyst creo ponti solidi tra dati grezzi e decisioni strategiche di business. La mia filosofia professionale si basa sul tradurre la complessità in chiarezza: identificare i gap strutturali, validare i modelli ed automatizzare la routine, consentendo alle persone di concentrarsi sul reale valore semantico dei dati.',
+                        experience: [
+                            { role: 'Data Engineering Analyst', company: 'AVIV Group - Nürnberg, Germania', duration: '2025 - Presente', type: 'work', desc: 'Progettazione e sviluppo di pipeline dati dbt all\'interno dell\'architettura Medallion (Bronze, Silver, Gold Layers) utilizzando Snowflake come Data Warehouse.\nLa forte comprensione della logica di business permette un modellamento efficace dello staging layer per reconciliare definizioni chiave per i team Finance e Commercial, assicurando che lo strato Gold sia facilmente condivisibile ed altamente riutilizzabile.' },
+                            { role: 'Business Intelligence Analyst', company: 'AVIV Group - Nürnberg, Germania', duration: '2022 - 2024', type: 'work', desc: 'Gestione della transizione di dati complessi durante la fusione transfrontaliera di grandi colossi immobiliari europei (SeLoger, Meilleure Agence, Imoweb, Imowelt).\nCollaborazione estesa con stakeholder di rilievo finanziario e ingegneristico per normalizzare metriche KPI, realizzando Single Source of Truth (SSOT) quali la Dashboard di Steering e la dashboard MRR (Monthly Recurring Revenue) su Tableau.' },
+                            { role: 'Innovation Business Analyst', company: 'Covisian - Milano, Italia', duration: '2019 - 2022', type: 'work', desc: 'Riorganizzazione del modello economico degli outsourcer CRM, modificando il parametro di incentivo economico basandolo sul cliente e sulla risoluzione dei problemi piuttosto che sul puro volume orario.\nAnalisi avanzate dei dati CRM con l\'ausilio di SQL e Python per strutturare metriche sul tasso di riduzione delle richiamate.' },
+                            { role: 'Digital Marketing Specialist', company: 'Covisian - Milano, Italia', duration: '2018 - 2019', type: 'work', desc: 'Esperienza chiave nell\'integrazione real-time tra campagne di lead generation e processi di outbound call conversion.\nResponsabile del monitoraggio completo del funnel, creazione delle landing page e setup della reportistica via Google Analytics e Google Tag Manager.' },
+                            { role: 'Control Room Coordinator', company: 'Covisian - Milano, Italia', duration: '2016 - 2018', type: 'work', desc: 'Coordinamento e gestione di un team composto da 10 analisti della sala controllo.\nOttimizzazione ed automazione completa dei flussi di pianificazione dei turni aziendali basata su algoritmi e logiche VBA, eliminando attriti interni.' },
+                            { role: 'Control Room Specialist', company: 'Covisian / Fastweb - Milano, Italia', duration: '2005 - 2016', type: 'work', desc: 'Monitoraggio real-time e analisi del traffico telefonico inbound e dell\'efficienza dei partner esterni.\nSviluppo di flussi automatizzati in Excel VBA e Microsoft Automate riducendo a zero le ore spese in reportistica manuale oraria inviata al top management.' },
+                            { role: 'Scienze Politiche', company: 'Università Statale di Milano', duration: '1992 - 1998', type: 'education', desc: 'Formazione umanistica focalizzata su logiche organizzative e statistiche amministrative.' },
+                            { role: 'Diploma di Liceo Scientifico', company: 'Liceo Scientifico "B. Russell" Milano', duration: '1986 - 1991', type: 'education', desc: 'Indirizzo scientifico tradizionale con focus su matematica, fisica e scienze naturali.' }
+                        ]
+                    },
+                    en: {
+                        title: 'Data Engineering Analyst',
+                        location: 'Nuremberg, Germany',
+                        tagline: '"AI is not a replacement for human intelligence; it is a tool to amplify it." - Fei-Fei Li',
+                        about: 'As a Data Analyst and Data Engineering Analyst, I bridge the gap between raw data and business decisions. My career has been about translating complexity into clarity: finding structural gaps, questioning models, and turning ambiguity into actionable strategic insights. I focus on automating routine tasks so that human intelligence can focus on meaning.',
+                        experience: [
+                            { role: 'Data Engineering Analyst', company: 'AVIV Group - Nuremberg, Germany', duration: '2025 - Present', type: 'work', desc: 'Built and optimized data pipelines using dbt within the Medallion architecture (Bronze, Silver, and Gold layers) with Snowflake as the central warehouse.\nLeveraged business logic insights to design staging layers that reconcile Finance and Commercial team KPIs, ensuring the Gold layer remains clean and highly reusable.' },
+                            { role: 'Business Intelligence Analyst', company: 'AVIV Group - Nuremberg, Germany', duration: '2022 - 2024', type: 'work', desc: 'Navigated massive cross-company mergers (SeLoger, Meilleure Agence in France, Imoweb in Belgium, and Imowelt in Germany).\nCollaborated with Finance and Commercial stakeholders to reconcile KPI definitions, delivering high-value Tableau Steering and Monthly Recurring Revenue (MRR) dashboards that served as Single Sources of Truth.' },
+                            { role: 'Innovation Business Analyst', company: 'Covisian - Milan, Italy', duration: '2019 - 2022', type: 'work', desc: 'Transformed call center outsourcer mechanics by shifting performance billing from call volumes to end-to-end customer relationship ownership.\nAnalysed CRM datasets using SQL and Python to track call drivers, repeat contact patterns, and validate the cost-reducing operational model.' },
+                            { role: 'Digital Marketing Specialist', company: 'Covisian - Milan, Italy', duration: '2018 - 2019', type: 'work', desc: 'Closed the feedback loop between digital lead generation and conversion in real-time.\nDeveloped landing pages, established tracking via Google Tag Manager, and managed full-funnel analytical reporting for major clients like DHL.' },
+                            { role: 'Control Room Coordinator', company: 'Covisian - Milan, Italy', duration: '2016 - 2018', type: 'work', desc: 'Coordinated and managed a real-time control room team of ten members.\nAutomated complex scheduling and shift patterns using Excel VBA and Microsoft Automate, removing bias and increasing transparency.' },
+                            { role: 'Control Room Specialist', company: 'Covisian / Fastweb - Milan, Italy', duration: '2005 - 2016', type: 'work', desc: 'Monitored real-time call center KPIs, IVR traffic distribution, and managed vendor SLAs under high efficiency pressure.\nDeveloped custom automation tools in Excel VBA to eliminate manual reporting overhead.' },
+                            { role: 'Political Science Degree', company: 'University of Milan', duration: '1992 - 1998', type: 'education', desc: 'Focus on organizational structures, administration, and analytical methodologies.' },
+                            { role: 'High School Diploma (Scientific)', company: 'Liceo Scientifico "B. Russell" Milan', duration: '1986 - 1991', type: 'education', desc: 'Traditional scientific curriculum focusing on mathematics, physics, and natural sciences.' }
+                        ]
+                    },
+                    de: {
+                        title: 'Data Engineering Analyst',
+                        location: 'Nürnberg, Deutschland',
+                        tagline: '"KI ist kein Ersatz für menschliche Intelligenz; sie ist ein Werkzeug, um sie zu verstärken." - Fei-Fei Li',
+                        about: 'Als Datenanalyst und Data-Engineering-Spezialist schlage ich die Brücke zwischen Rohdaten und strategischen Geschäftsentscheidungen. Mein Fokus liegt darauf, Komplexität in Klarheit zu verwandeln: strukturelle Lücken zu finden, Modelle zu hinterfragen und Routineprozesse zu automatisieren, damit sich die menschliche Aufmerksamkeit auf die wesentliche Bedeutung konzentrieren kann.',
+                        experience: [
+                            { role: 'Data Engineering Analyst', company: 'AVIV Group - Nürnberg, Deutschland', duration: '2025 - Heute', type: 'work', desc: 'Aufbau und Optimierung von dbt-Datenpipelines innerhalb der Medallion-Architektur (Bronze, Silver, Gold Layers) mit Snowflake als zentralem Data Warehouse.\nNutzung von Business-Logik-Kenntnissen für das Design von Staging-Layern zur Abstimmung von Finanz- und Vertriebs-KPIs.' },
+                            { role: 'Business Intelligence Analyst', company: 'AVIV Group - Nürnberg, Deutschland', duration: '2022 - 2024', type: 'work', desc: 'Begleitung der grenzüberschreitenden Unternehmensfusion (SeLoger, Meilleure Agence, Imoweb, Imowelt).\nAbstimmung von KPI-Definitionen in enger Zusammenarbeit mit Stakeholdern aus Finanzen und Vertrieb sowie Bereitstellung von Tableau-Steuerungsdashboards als Single Source of Truth.' },
+                            { role: 'Innovation Business Analyst', company: 'Covisian - Mailand, Italien', duration: '2019 - 2022', type: 'work', desc: 'Neuausrichtung des Abrechnungsmodells für Callcenter-Dienstleister von der reinen Anrufanzahl hin zur Ende-zu-Ende-Verantwortung der Kundenbeziehung.\nCRM-Datenanalysen mit SQL und Python zur Verfolgung von wiederholten Kundenkontakten.' },
+                            { role: 'Digital Marketing Specialist', company: 'Covisian - Mailand, Italien', duration: '2018 - 2019', type: 'work', desc: 'Entwicklung von Echtzeit-Feedbackschleifen zwischen digitaler Lead-Generierung und Lead-Konvertierung.\nErstellung von Landingpages, Tracking-Implementierung mit Google Tag Manager und Reporting für Großkunden wie DHL.' },
+                            { role: 'Control Room Coordinator', company: 'Covisian - Mailand, Italien', duration: '2016 - 2018', type: 'work', desc: 'Koordination und Führung des Echtzeit-Steuerungsteams von 10 Mitarbeitern.\nAutomatisierung komplexer Dienstplanungen mittels Excel VBA und Microsoft Automate zur Beseitigung manueller Aufwände.' },
+                            { role: 'Control Room Specialist', company: 'Covisian / Fastweb - Mailand, Italien', duration: '2005 - 2016', type: 'work', desc: 'Echtzeit-Überwachung von Callcenter-KPIs, IVR-Verkehrsverteilung und Partnersteuerung unter hohem Effizienzdruck.\nEntwicklung von VBA-Tools zur Automatisierung stündlicher Reportings.' },
+                            { role: 'Studium der Politikwissenschaften', company: 'Staatliche Universität Mailand', duration: '1992 - 1998', type: 'education', desc: 'Schwerpunkt auf Organisationsstrukturen, administrative Prozesse und Analysemethoden.' },
+                            { role: 'Abitur / Wissenschaftliches Gymnasium', company: 'Liceo Scientifico "B. Russell" Mailand', duration: '1986 - 1991', type: 'education', desc: 'Traditioneller wissenschaftlicher Lehrplan mit Schwerpunkt auf Mathematik, Physik und Naturwissenschaften.' }
+                        ]
+                    }
+                },
+
+                // Progetti
+                projects: [
+                    { 
+                        title: {
+                            it: 'Data Pipeline Medallion',
+                            en: 'Medallion Data Pipeline',
+                            de: 'Medallion Datenpipeline'
+                        }, 
+                        tags: ['dbt', 'snowflake', 'sql'], 
+                        desc: {
+                            it: 'Sviluppo di logiche di staging dbt scalabili su Snowflake strutturate secondo architettura Medallion per centralizzare le definizioni KPI finanziarie di gruppo.',
+                            en: 'Scalable dbt staging layer development on Snowflake structured using Medallion patterns to align core financial and commercial KPIs.',
+                            de: 'Skalierbare dbt-Staging-Logik auf Snowflake nach Medallion-Architektur zur Harmonisierung wichtiger Finanzkennzahlen.'
+                        }
+                    },
+                    { 
+                        title: {
+                            it: 'Dashboard Tableau SSOT',
+                            en: 'SSOT Tableau Dashboard',
+                            de: 'SSOT Tableau Dashboard'
+                        }, 
+                        tags: ['tableau', 'bigquery', 'python'], 
+                        desc: {
+                            it: 'Realizzazione delle dashboard di Steering e MRR per la pianificazione finanziaria strategica durante l\'unione di 4 grandi aziende europee.',
+                            en: 'Strategic steering and Monthly Recurring Revenue (MRR) dashboards serving as Single Source of Truth for unified European real estate players.',
+                            de: 'Steuerungs- und MRR-Dashboards zur strategischen Finanzplanung im Rahmen des Zusammenschlusses europäischer Immobilienportale.'
+                        }
+                    },
+                    { 
+                        title: {
+                            it: 'Feedback Loop CRM',
+                            en: 'CRM Feedback Loop',
+                            de: 'CRM-Feedbackschleife'
+                        }, 
+                        tags: ['sql', 'python', 'crm'], 
+                        desc: {
+                            it: 'Creazione di indicatori avanzati per tracciare la ripetibilità delle chiamate degli utenti, validando un innovativo modello basato sul cliente.',
+                            en: 'Advanced query models measuring contact frequency and customer repeat patterns to validate outcome-based outsourcing frameworks.',
+                            de: 'Entwicklung von Analysemodellen zur Messung della Kontakthäufigkeit zur Validierung kundenorientierter Servicemodelle.'
+                        }
+                    }
+                ],
+
+                init() {
+                    if (this.cookieDecided && this.cookieConsented) {
+                        this.activateTrackingScripts();
+                    }
+                },
+
+                acceptAllCookies() {
+                    localStorage.setItem('cookie_decided', 'true');
+                    localStorage.setItem('cookie_analytics_consent', 'true');
+                    this.cookieDecided = true;
+                    this.cookieConsented = true;
+
+                    gtag('consent', 'update', {
+                        'analytics_storage': 'granted',
+                        'ad_storage': 'granted',
+                        'ad_user_data': 'granted',
+                        'ad_personalization': 'granted'
+                    });
+
+                    this.activateTrackingScripts();
+                },
+
+                rejectAllCookies() {
+                    localStorage.setItem('cookie_decided', 'true');
+                    localStorage.setItem('cookie_analytics_consent', 'false');
+                    this.cookieDecided = true;
+                    this.cookieConsented = false;
+
+                    gtag('consent', 'update', {
+                        'analytics_storage': 'denied',
+                        'ad_storage': 'denied',
+                        'ad_user_data': 'denied',
+                        'ad_personalization': 'denied'
+                    });
+                },
+
+                activateTrackingScripts() {
+                    // GA4
+                    if (this.GA_MEASUREMENT_ID && !document.getElementById('ga-script')) {
+                        const sGA = document.createElement('script');
+                        sGA.id = 'ga-script';
+                        sGA.async = true;
+                        sGA.src = 'https://www.googletagmanager.com/gtag/js?id=' + this.GA_MEASUREMENT_ID;
+                        document.head.appendChild(sGA);
+
+                        sGA.onload = () => {
+                            window.dataLayer = window.dataLayer || [];
+                            function gtag(){dataLayer.push(arguments);}
+                            gtag('js', new Date());
+                            gtag('config', this.GA_MEASUREMENT_ID);
+                        };
+                    }
+
+                    // GTM
+                    if (this.GTM_CONTAINER_ID && !document.getElementById('gtm-script')) {
+                        window.dataLayer = window.dataLayer || [];
+                        window.dataLayer.push({'gtm.start': new Date().getTime(), event: 'gtm.js'});
+                        const sGTM = document.createElement('script');
+                        sGTM.id = 'gtm-script';
+                        sGTM.async = true;
+                        sGTM.src = 'https://www.googletagmanager.com/gtm.js?id=' + this.GTM_CONTAINER_ID;
+                        document.head.appendChild(sGTM);
+                    }
+                },
+
+                // Invio asincrono del modulo contatti
+                async submitContactForm(event) {
+                    const form = event.target;
+                    const formData = new FormData(form);
+
+                    try {
+                        const response = await fetch(this.FORMSPREE_ENDPOINT, {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'Accept': 'application/json'
+                            }
+                        });
+                        
+                        if (response.ok) {
+                            this.showContactSuccess = true;
+                            form.reset();
+                        } else {
+                            alert("Errore durante l'invio. Riprova più tardi.");
+                        }
+                    } catch (error) {
+                        console.error(error);
+                        alert("Errore di connessione. Riprova più tardi.");
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
